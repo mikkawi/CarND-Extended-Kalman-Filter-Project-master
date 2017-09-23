@@ -71,14 +71,14 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     * update the state by using Extended Kalman Filter equations
   */
 
-    if (x_[0] < epsilon && x_[1] < epsilon) {
+   /* if (x_[0] < epsilon && x_[1] < epsilon) {
       x_[0] = epsilon;
       x_[1] = epsilon;
     } else if (x_[0] < epsilon) {
 
       x_[0] = epsilon;
     }
-
+    */
     Tools tools;
     VectorXd h_(3);
     float px, px2, py, py2, sps, vx, vy;
@@ -89,9 +89,12 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     sps = pow((px2 + py2), 0.5);
     vx = x_[2];
     vy = x_[3];
-    h_ << sps, atan(py / px), (px * vx + py * vy) / sps;
+    h_ << sps, atan2(py, px), (px * vx + py * vy) / sps;
     //cout <<"h"<<h_<<endl;
     VectorXd y = z - h_;
+
+    while (y(1) < -M_PI) y(1) += 2. * M_PI;
+    while (y(1) > M_PI) y(1) -= 2. * M_PI;
     //cout <<"y" << y <<endl;
 
     MatrixXd Hj = tools.CalculateJacobian(x_);
@@ -101,7 +104,8 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
     //cout <<"PHt" << PHt <<endl;
     //cout <<"R_" << R_<<endl;
     //cout << "Hj*PHT" << endl<<Hj*PHt << endl;
-    MatrixXd S = Hj * PHt + R_;
+    //MatrixXd S = Hj * PHt + R_;
+    MatrixXd S = Hj * P_ * Ht + R_;
     //cout <<"S" << S <<endl;
 
     MatrixXd K = PHt * S.inverse();

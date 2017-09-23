@@ -67,7 +67,7 @@ int main()
     	  iss >> sensor_type;
 
     	  if (sensor_type.compare("L") == 0) {
-      	  		cout << "Main: Laser Measurement" << endl;
+      	  		//cout << "Main: Laser Measurement" << endl;
               meas_package.sensor_type_ = MeasurementPackage::LASER;
           		meas_package.raw_measurements_ = VectorXd(2);
           		float px;
@@ -75,11 +75,13 @@ int main()
           		iss >> px;
           		iss >> py;
           		meas_package.raw_measurements_ << px, py;
+             // cout<<"Laser Measurement: " << meas_package.raw_measurements_<< endl;
           		iss >> timestamp;
           		meas_package.timestamp_ = timestamp;
+              //cout << "main: time stamp: " << meas_package.timestamp_<< endl;
           } else if (sensor_type.compare("R") == 0) {
 
-      	  		cout << "Main: RADAR Measurement" << endl;
+      	  		//cout << "Main: RADAR Measurement" << endl;
               meas_package.sensor_type_ = MeasurementPackage::RADAR;
           		meas_package.raw_measurements_ = VectorXd(3);
           		float ro;
@@ -88,14 +90,14 @@ int main()
           		iss >> ro;
           		iss >> theta;
           		iss >> ro_dot;
-              cout <<"ro: "<< ro << endl;
-              cout <<"theta: "<< theta << endl;
-              cout <<"ro_dot: "<< ro_dot << endl;
+              //cout <<"ro: "<< ro << endl;
+              //cout <<"theta: "<< theta << endl;
+              //cout <<"ro_dot: "<< ro_dot << endl;
           		meas_package.raw_measurements_ << ro,theta, ro_dot;
-          		//cout << "Radar Measurement: " << endl << meas_package.raw_measurements_;
+              //cout<<"Radar Measurement: " << meas_package.raw_measurements_<< endl;
               iss >> timestamp;
               meas_package.timestamp_ = timestamp;
-              cout << "main: time stamp: " << meas_package.timestamp_<< endl;
+              //cout << "main: time stamp: " << meas_package.timestamp_<< endl;
           }
         float x_gt;
     	  float y_gt;
@@ -129,12 +131,12 @@ int main()
     	  estimate(2) = v1;
     	  estimate(3) = v2;
 
-        cout << "Main: estimate: " << estimate << endl;
+        //cout << "Main: estimate: " << estimate << endl;
     	  
     	  estimations.push_back(estimate);
 
     	  VectorXd RMSE = tools.CalculateRMSE(estimations, ground_truth);
-        cout << "Main: RMSE = " << endl << RMSE <<endl;
+        //cout << "Main: RMSE = " << endl << RMSE <<endl;
 
           json msgJson;
           msgJson["estimate_x"] = p_x;
